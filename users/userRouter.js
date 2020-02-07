@@ -62,14 +62,11 @@ router.get("/:id/posts", validateUserId, (req, res) => {
     .catch(err => res.status(500).send({ errorMessage: err }));
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateUserId, (req, res) => {
   userDb
     .remove(req.params.id)
-    .then(records => {
-      console.log(records);
-      !records
-        ? res.status(400).send({ message: "no user was deleted" })
-        : res.status(200).send({ message: `${records} records deleted` });
+    .then(record => {
+      res.status(200).send({ message: `${record} records deleted` });
     })
     .catch(err =>
       res
@@ -82,9 +79,9 @@ router.put("/:id", validateUserId, validateUser, (req, res) => {
   userDb
     .update(req.params.id, req.body)
     .then(user => {
-      !user
-        ? res.status(400).send({ message: "no user was modified" })
-        : res.status(200).send({ message: `${user} record modified` });
+      // !user
+      //   ? res.status(400).send({ message: "no user was modified" }):
+      res.status(200).send({ message: `${user} record modified` });
     })
     .catch(err =>
       res
@@ -94,16 +91,14 @@ router.put("/:id", validateUserId, validateUser, (req, res) => {
 });
 
 //custom middleware
-
+//? Why does this catch only work with the else statement
 function validateUserId(req, res, next) {
   userDb
     .getById(req.params.id)
     .then(user => {
-      if (user) {
-        req.user = user;
-      } else {
-        res.status(400).send({ message: "user ID not found", error: err });
-      }
+      user
+        ? (req.user = user)
+        : res.status(400).send({ message: "user ID not found", error: err });
     })
     .catch(err =>
       res.status(500).send({ message: "invalid user id", error: err })
