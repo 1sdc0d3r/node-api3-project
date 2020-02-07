@@ -18,6 +18,7 @@ function validatePostId(req, res, next) {
     .getById(req.params.id)
     .then(post => console.log(post))
     .catch(err => res.status(400).send({ message: "invalid post id" }));
+  next();
 }
 
 module.exports = router;
