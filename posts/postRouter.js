@@ -1,27 +1,23 @@
-const express = require('express');
+const express = require("express");
+const postDb = require("./postDb");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // do your magic!
-});
+router.get("/", (req, res) => {});
 
-router.get('/:id', (req, res) => {
-  // do your magic!
-});
+router.get("/:id", (req, res) => {});
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
-});
+router.delete("/:id", (req, res) => {});
 
-router.put('/:id', (req, res) => {
-  // do your magic!
-});
+router.put("/:id", (req, res) => {});
 
 // custom middleware
 
 function validatePostId(req, res, next) {
-  // do your magic!
+  postDb
+    .getById(req.params.id)
+    .then(post => console.log(post))
+    .catch(err => res.status(400).send({ message: "invalid post id" }));
 }
 
 module.exports = router;
