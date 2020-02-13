@@ -11,8 +11,6 @@ function logger(req, res, next) {
   next();
 }
 
-
-
 const middleware = [express.json(), logger];
 server.use(middleware);
 

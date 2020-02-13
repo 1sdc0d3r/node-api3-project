@@ -12,10 +12,10 @@ router.get("/", (req, res) => {
     );
 });
 
-router.get("/:id", validatePostId, (req, res) => {
+router.get("/:id", (req, res) => {
   postDb
     .getById(req.params.id)
-    .then(post => res.status(200).send(post))
+    .then(post => res.status(200).json(post))
     .catch(err =>
       res
         .status(500)
@@ -49,21 +49,24 @@ router.put("/:id", validatePostId, validatePost, (req, res) => {
     );
 });
 
+module.exports = router;
+
 // custom middleware
 
 function validatePostId(req, res, next) {
   postDb
     .getById(req.params.id)
-    .then(post => {
-      if (!post) {
-        res.status(400).send({ message: "Post with the ID was not found" });
+    .then(result => {
+      if (!result) {
+        res.status(400).json({ message: "Post with the ID was not found" });
       }
     })
     .catch(err =>
-      res.status(500).send({ message: "Unable to retrieve post", error: err })
+      res.status(500).json({ message: "Unable to retrieve post", error: err })
     );
   next();
 }
+
 function validatePost(req, res, next) {
   if (!req.body) {
     res.status(400).send({ message: "missing post data." });
@@ -72,5 +75,3 @@ function validatePost(req, res, next) {
   }
   next();
 }
-
-module.exports = router;
